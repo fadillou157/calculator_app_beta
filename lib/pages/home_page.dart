@@ -1,6 +1,7 @@
 import 'package:challenge_appcalculator/models/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String result = '123455';
+  String result = '0';
   //pour afficher le resultat
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
               GestureDetector(
                 onHorizontalDragEnd: (details) => {_dragToDelete()},
                 child: Text(
-                  result,
+                  _formatResult(result),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -53,11 +54,106 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _dragToDelete() {
-    print("Delete last digit");
+    setState(
+      () {
+        if (result.length > 1) {
+          result = result.substring(0, result.length - 1);
+          currentNumber = result;
+        } else {
+          result = '0';
+          currentNumber = '';
+        }
+      },
+    );
   }
 
+  String previousNumber = '';
+  String currentNumber = '';
+  String selectedOperated = '';
   void _onButtonPressed(String buttonText) {
-    print(buttonText);
+    setState(
+      () {
+        switch (buttonText) {
+          case '÷':
+          case '×':
+          case '-':
+          case '+':
+            if (previousNumber != '') {
+              _calculateResult();
+            } else {
+              previousNumber = currentNumber;
+            }
+            currentNumber = '';
+            selectedOperated = buttonText;
+            break;
+          case '±':
+            currentNumber = convertStringToDouble(currentNumber) < 0
+                ? currentNumber.replaceAll('-', '')
+                : "-$currentNumber";
+            result = currentNumber;
+            break;
+          case '%':
+            currentNumber =
+                (convertStringToDouble(currentNumber) / 100).toString();
+            result = currentNumber;
+            break;
+          case '=':
+            _calculateResult();
+            previousNumber = '';
+            selectedOperated = '';
+            break;
+          case 'C':
+            _resetCalculator();
+            break;
+          default:
+            currentNumber = currentNumber + buttonText;
+            result = currentNumber;
+        }
+      },
+    );
+  }
+
+  void _calculateResult() {
+    double _previousNumber = convertStringToDouble(previousNumber);
+    double _currentNumber = convertStringToDouble(currentNumber);
+
+    switch (selectedOperated) {
+      case '÷':
+        _previousNumber = _previousNumber / _currentNumber;
+        break;
+      case '×':
+        _previousNumber = _previousNumber * _currentNumber;
+        break;
+      case '-':
+        _previousNumber = _previousNumber - _currentNumber;
+        break;
+      case '+':
+        _previousNumber = _previousNumber + _currentNumber;
+        break;
+      default:
+        break;
+    }
+
+    currentNumber =
+        (_previousNumber % 1 == 0 ? _previousNumber.toInt() : _previousNumber)
+            .toString();
+    result = currentNumber;
+  }
+
+  void _resetCalculator() {
+    result = '0';
+    previousNumber = '';
+    currentNumber = '';
+    selectedOperated = '';
+  }
+
+  double convertStringToDouble(String number) {
+    return double.tryParse(number) ?? 0;
+  }
+
+  String _formatResult(String number) {
+    var formatter = NumberFormat("###,###.##", "en_Us");
+    return formatter.format(convertStringToDouble(number));
   }
 
   Widget _buildButtonsGrid() {
@@ -68,9 +164,9 @@ class _HomePageState extends State<HomePage> {
         final button = buttons[index];
         return MaterialButton(
           padding: button.value == '0'
-              ? EdgeInsets.only(right: 100)
+              ? const EdgeInsets.only(right: 100)
               : EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(60),
             ),
@@ -82,7 +178,9 @@ class _HomePageState extends State<HomePage> {
           child: Text(
             button.value,
             style: TextStyle(
-              color: button.fgColor,
+              color: (button.value == selectedOperated && currentNumber == '')
+                  ? button.bgColor
+                  : button.fgColor,
               fontSize: 35,
             ),
           ),
