@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
             button.value,
             style: TextStyle(
               color: (button.value == selectedOperated && currentNumber == '')
-                  ? button.bgColor
+                  ? button.fgColor
                   : button.fgColor,
               fontSize: 35,
             ),
