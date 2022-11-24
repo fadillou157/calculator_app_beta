@@ -21,9 +21,11 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            // Pour l'alignement du contenu de la page (Pour les colones un alignment sur l'axe verticale ou y) : Voir documentation Flutter alignement
+            // Pour l'alignement du contenu de la page (Pour les colones un alignment sur
+            // l'axe verticale ou y) : Voir documentation Flutter alignement
             crossAxisAlignment: CrossAxisAlignment.end,
-            // Pour l'alignement du contenu de la page (Pour les colones un alignment sur l'axe horizontale ou x)
+            // Pour l'alignement du contenu de la page (Pour les colones un alignment sur
+            // l'axe horizontale ou x)
             children: [
               GestureDetector(
                 onHorizontalDragEnd: (details) => {_dragToDelete()},
@@ -34,13 +36,14 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(
                     fontSize: result.length > 5
                         ? 60
-                        : 100, // Pour redimensionner la taille du texte si le text est supérieur à 5 caractéres metre la taille à 60px.
+                        : 100, // Pour redimensionner la taille du texte si le text est
+                    // supérieur à 5 caractéres metre la taille à 60px.
                     color: Colors.white,
                     fontWeight: FontWeight.w200,
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15, // hauteur de la partie resultat
               ),
               Container(
