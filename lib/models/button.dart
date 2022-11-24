@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Button {
   final String value;
-  final Color bgColor; // bg color pour les bouttons
+  final Color bgColor; // bg couleur pour les bouttons
   final Color fgColor; // text button color
 
   Button(this.value, this.bgColor, this.fgColor);
