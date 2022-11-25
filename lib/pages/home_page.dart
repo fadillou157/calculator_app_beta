@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   String _formatResult(String number) {
-    var formatter = NumberFormat("###,###.##", "en_Us");
+    var formatter = NumberFormat("###,###.###", "en_Fr");
     return formatter.format(convertStringToDouble(number));
   }
 
@@ -174,7 +174,9 @@ class _HomePageState extends State<HomePage> {
               Radius.circular(60),
             ),
           ),
-          color: button.bgColor,
+          color: (button.value == selectedOperated && currentNumber == '')
+              ? Colors.white
+              : button.bgColor,
           onPressed: () {
             _onButtonPressed(button.value);
           },
@@ -182,7 +184,7 @@ class _HomePageState extends State<HomePage> {
             button.value,
             style: TextStyle(
               color: (button.value == selectedOperated && currentNumber == '')
-                  ? button.fgColor
+                  ? button.bgColor
                   : button.fgColor,
               fontSize: 35,
             ),
